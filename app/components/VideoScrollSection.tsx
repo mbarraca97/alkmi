@@ -20,28 +20,42 @@ export default function VideoScrollSection() {
 
     const initScrollTrigger = () => {
       if (!video.duration || isNaN(video.duration)) {
-        console.log('Video duration not ready yet');
         return;
       }
-
-      console.log('Initializing ScrollTrigger with video duration:', video.duration);
+      const existingTrigger = ScrollTrigger.getById('video-scroll-trigger');
+      if (existingTrigger) {
+        existingTrigger.kill();
+      }
 
       ScrollTrigger.create({
+        id: 'video-scroll-trigger',
         trigger: container,
         start: 'top top',
-        end: '+=200%',
+        end: '+=300%',
         scrub: true,
         pin: true,
+        pinSpacing: true,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
-          const newTime = video.duration * self.progress;
-          video.currentTime = newTime;
-          console.log('Scroll progress:', self.progress, 'Video time:', newTime);
+          // Avoid seeking exactly at duration (some browsers clamp oddly there).
+          const isNearEnd = self.progress >= 0.999;
+          const newTime = isNearEnd ? Math.max(video.duration - 0.01, 0) : video.duration * self.progress;
+          if (video.currentTime !== newTime) {
+            video.currentTime = newTime;
+          }
+        },
+        onLeave: () => {
+          video.currentTime = Math.max(video.duration - 0.01, 0);
+        },
+        onEnterBack: () => {
+          video.currentTime = Math.max(video.duration - 0.01, 0);
         },
       });
+
+      ScrollTrigger.refresh();
     };
 
     const handleLoadedMetadata = () => {
-      console.log('Video metadata loaded, duration:', video.duration);
       setTimeout(initScrollTrigger, 100);
     };
 
