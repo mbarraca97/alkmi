@@ -17,6 +17,35 @@ export default function VideoScrollSection() {
     const container = containerRef.current;
 
     if (!video || !container || typeof window === 'undefined') return;
+    let targetProgress = 0;
+    let smoothedProgress = 0;
+    let rafId: number | null = null;
+    const FRAME_RATE = 30;
+    const FRAME_TIME = 1 / FRAME_RATE;
+    const MAX_STEP_PER_TICK = FRAME_TIME * 2;
+
+    const animateVideoTime = () => {
+      const maxTime = Math.max(video.duration - 0.01, 0);
+      smoothedProgress += (targetProgress - smoothedProgress) * 0.06;
+      const targetTime = maxTime * smoothedProgress;
+      const quantizedTarget = Math.round(targetTime / FRAME_TIME) * FRAME_TIME;
+      const delta = quantizedTarget - video.currentTime;
+      const clampedDelta = Math.max(
+        Math.min(delta, MAX_STEP_PER_TICK),
+        -MAX_STEP_PER_TICK
+      );
+      const nextTime = Math.min(
+        Math.max(video.currentTime + clampedDelta, 0),
+        maxTime
+      );
+
+      // Skip tiny seeks to reduce decoder churn and micro-jitter.
+      if (Math.abs(video.currentTime - nextTime) > 0.0005) {
+        video.currentTime = nextTime;
+      }
+
+      rafId = window.requestAnimationFrame(animateVideoTime);
+    };
 
     const initScrollTrigger = () => {
       if (!video.duration || isNaN(video.duration)) {
@@ -31,26 +60,25 @@ export default function VideoScrollSection() {
         id: 'video-scroll-trigger',
         trigger: container,
         start: 'top top',
-        end: '+=300%',
+        end: '+=650%',
         scrub: true,
         pin: true,
         pinSpacing: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          // Avoid seeking exactly at duration (some browsers clamp oddly there).
-          const isNearEnd = self.progress >= 0.999;
-          const newTime = isNearEnd ? Math.max(video.duration - 0.01, 0) : video.duration * self.progress;
-          if (video.currentTime !== newTime) {
-            video.currentTime = newTime;
-          }
+          targetProgress = self.progress >= 0.999 ? 1 : self.progress;
         },
         onLeave: () => {
-          video.currentTime = Math.max(video.duration - 0.01, 0);
+          targetProgress = 1;
         },
         onEnterBack: () => {
-          video.currentTime = Math.max(video.duration - 0.01, 0);
+          targetProgress = 1;
         },
       });
+
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(animateVideoTime);
+      }
 
       ScrollTrigger.refresh();
     };
@@ -67,6 +95,9 @@ export default function VideoScrollSection() {
 
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
       ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.trigger === container) {
           trigger.kill();
