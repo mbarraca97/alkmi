@@ -47,54 +47,48 @@ export default function VideoScrollSection() {
       rafId = window.requestAnimationFrame(animateVideoTime);
     };
 
-    const initScrollTrigger = () => {
-      if (!video.duration || isNaN(video.duration)) {
-        return;
-      }
-      const existingTrigger = ScrollTrigger.getById('video-scroll-trigger');
-      if (existingTrigger) {
-        existingTrigger.kill();
-      }
+    const existingTrigger = ScrollTrigger.getById('video-scroll-trigger');
+    if (existingTrigger) {
+      existingTrigger.kill();
+    }
 
-      ScrollTrigger.create({
-        id: 'video-scroll-trigger',
-        trigger: container,
-        start: 'top top',
-        end: '+=650%',
-        scrub: true,
-        pin: true,
-        pinSpacing: true,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          targetProgress = self.progress >= 0.999 ? 1 : self.progress;
-        },
-        onLeave: () => {
-          targetProgress = 1;
-        },
-        onEnterBack: () => {
-          targetProgress = 1;
-        },
-      });
+    // Create the pin/spacer immediately so the next section can't start "under" it.
+    ScrollTrigger.create({
+      id: 'video-scroll-trigger',
+      trigger: container,
+      start: 'top top',
+      end: '+=650%',
+      scrub: true,
+      pin: true,
+      pinSpacing: true,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        targetProgress = self.progress >= 0.999 ? 1 : self.progress;
+      },
+      onLeave: () => {
+        targetProgress = 1;
+      },
+      onEnterBack: () => {
+        targetProgress = 1;
+      },
+    });
 
+    const startPlaybackLoopIfReady = () => {
+      if (!video.duration || isNaN(video.duration)) return;
       if (rafId === null) {
         rafId = window.requestAnimationFrame(animateVideoTime);
       }
-
       ScrollTrigger.refresh();
     };
 
-    const handleLoadedMetadata = () => {
-      setTimeout(initScrollTrigger, 100);
-    };
-
     if (video.readyState >= 1) {
-      handleLoadedMetadata();
+      startPlaybackLoopIfReady();
     } else {
-      video.addEventListener('loadedmetadata', handleLoadedMetadata);
+      video.addEventListener('loadedmetadata', startPlaybackLoopIfReady);
     }
 
     return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('loadedmetadata', startPlaybackLoopIfReady);
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId);
       }

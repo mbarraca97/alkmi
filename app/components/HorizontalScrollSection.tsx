@@ -20,34 +20,39 @@ export default function HorizontalScrollSection() {
 
     if (!container || !sticky || !scrollContainer || typeof window === 'undefined') return;
 
-    const scrollWidth = scrollContainer.scrollWidth - window.innerWidth;
-    const maxScroll = Math.max(scrollWidth, 0);
+    const getMaxScroll = () =>
+      Math.max(scrollContainer.scrollWidth - window.innerWidth, 0);
 
-    if (maxScroll <= 0) return;
+    // If there's nothing to scroll horizontally, don't create triggers.
+    if (getMaxScroll() <= 0) return;
 
-    // Natural "dock": section scrolls normally, then sticky content locks at top.
-    const travelDistance = maxScroll * 1.5;
-    container.style.height = `${window.innerHeight + travelDistance}px`;
+    // Ensure a clean start (important when navigating back/forward or hot reload).
     gsap.set(scrollContainer, { x: 0 });
 
+    const existing = ScrollTrigger.getById('horizontal-scroll-trigger');
+    if (existing) existing.kill();
+
     const animation = gsap.to(scrollContainer, {
-      x: -maxScroll,
+      x: () => -getMaxScroll(),
       ease: 'none',
       scrollTrigger: {
+        id: 'horizontal-scroll-trigger',
         trigger: container,
         start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1.2,
+        end: () => `+=${getMaxScroll()}`,
+        scrub: 1,
+        pin: sticky,
+        pinSpacing: true,
+        anticipatePin: 1,
         invalidateOnRefresh: true,
       },
     });
 
-    ScrollTrigger.refresh();
-
     return () => {
       animation.kill();
+      const trigger = ScrollTrigger.getById('horizontal-scroll-trigger');
+      if (trigger) trigger.kill();
       gsap.set(scrollContainer, { clearProps: 'transform' });
-      container.style.height = '';
     };
   }, []);
 
@@ -55,7 +60,7 @@ export default function HorizontalScrollSection() {
     <div ref={containerRef} className="relative w-full bg-cream">
       <div 
         ref={stickyRef}
-        className="sticky top-0 h-screen overflow-hidden"
+        className="h-screen overflow-hidden"
       >
         <div
           ref={scrollContainerRef}
