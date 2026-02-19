@@ -31,11 +31,11 @@ export default function PageLoader({ children }: PropsWithChildren) {
   const [isActive, setIsActive] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [useIntroLogo, setUseIntroLogo] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
 
   const timersRef = useRef<number[]>([]);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const stackRef = useRef<HTMLDivElement>(null);
   const sliderOuterRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | null>(null);
 
@@ -49,6 +49,7 @@ export default function PageLoader({ children }: PropsWithChildren) {
     setIsActive(true);
     setIsExpanded(false);
     setIsFadingOut(false);
+    setUseIntroLogo(false);
     setSlideIndex(0);
 
     clearTimers();
@@ -86,11 +87,10 @@ export default function PageLoader({ children }: PropsWithChildren) {
             timersRef.current.push(
               window.setTimeout(() => {
                 const sliderOuter = sliderOuterRef.current;
-                const stack = stackRef.current;
                 const overlay = overlayRef.current;
                 const target = document.querySelector('[data-intro-hero]');
 
-                if (!sliderOuter || !stack || !overlay || !(target instanceof HTMLElement)) {
+                if (!sliderOuter || !overlay || !(target instanceof HTMLElement)) {
                   // Fallback: just fade out.
                   setIsFadingOut(true);
                   timersRef.current.push(
@@ -107,16 +107,17 @@ export default function PageLoader({ children }: PropsWithChildren) {
                 const dx = to.left - from.left;
                 const dy = to.top - from.top;
 
-                // Animate the whole stack so the slider ends exactly where the hero image is.
-                stack.style.willChange = 'transform, opacity';
-                stack.style.transition = `transform ${SLIDE_TO_TARGET_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+                // Swap logo color in place; only the slider "card" moves to the hero image.
+                setUseIntroLogo(true);
+                sliderOuter.style.willChange = 'transform';
+                sliderOuter.style.transition = `transform ${SLIDE_TO_TARGET_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
                 overlay.style.willChange = 'opacity';
                 overlay.style.transition = `opacity ${FADE_DURATION_MS}ms ease`;
 
                 // Trigger layout before applying transform.
-                void stack.getBoundingClientRect();
+                void sliderOuter.getBoundingClientRect();
 
-                stack.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+                sliderOuter.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
 
                 timersRef.current.push(
                   window.setTimeout(() => {
@@ -161,15 +162,33 @@ export default function PageLoader({ children }: PropsWithChildren) {
             transition: `opacity ${FADE_DURATION_MS}ms ease`,
           }}
         >
-          <div className="flex h-full w-full items-center justify-center px-6">
-            <div ref={stackRef} className="flex flex-col items-center">
-              <Image
-                src="/images/logo_gold.png"
-                alt="Alkmi logo"
-                width={80}
-                height={80}
-                priority
-              />
+          <div className="flex h-full w-full items-start justify-center px-6 pt-[120px]">
+            <div className="flex flex-col items-center">
+              <div className="relative h-[201px] w-[156px]">
+                <Image
+                  src="/images/Logo.png"
+                  alt="Alkmi logo"
+                  fill
+                  sizes="156px"
+                  className="object-contain transition-opacity duration-300"
+                  style={{
+                    opacity: useIntroLogo ? 0 : 1,
+                    filter:
+                      'brightness(0) saturate(100%) invert(55%) sepia(35%) saturate(444%) hue-rotate(349deg) brightness(94%) contrast(92%)',
+                  }}
+                  priority
+                />
+                <Image
+                  src="/images/Logo.png"
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes="156px"
+                  className="object-contain transition-opacity duration-300"
+                  style={{ opacity: useIntroLogo ? 1 : 0 }}
+                  priority
+                />
+              </div>
 
               <div
                 ref={sliderOuterRef}
@@ -177,6 +196,7 @@ export default function PageLoader({ children }: PropsWithChildren) {
                 style={{
                   height: isExpanded ? 520 : 3,
                   transition: `height ${EXPAND_DURATION_MS}ms ease`,
+                  transform: 'translate3d(0,0,0)',
                 }}
               >
                 <div className="relative h-[520px] w-[400px]">
@@ -189,16 +209,6 @@ export default function PageLoader({ children }: PropsWithChildren) {
                     priority
                   />
                 </div>
-              </div>
-
-              <div className="mt-6">
-                <Image
-                  src="/images/logo_text_gold.png"
-                  alt="Alkmi"
-                  width={160}
-                  height={40}
-                  priority
-                />
               </div>
             </div>
           </div>
