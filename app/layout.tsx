@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Aboreto, Lexend } from "next/font/google";
 import "./globals.css";
+import PageLoader from "./components/PageLoader";
 
 const aboreto = Aboreto({
   weight: "400",
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${aboreto.variable} ${lexend.variable} antialiased`}
       >
-        {children}
+        <PageLoader>{children}</PageLoader>
       </body>
     </html>
   );
