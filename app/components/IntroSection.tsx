@@ -24,12 +24,12 @@ export default function IntroSection() {
             The Spirit of Luxury
           </h1>
 
-          <div className="mt-[40px]">
+          <div className="mt-[40px]" data-intro-hero>
             <Image
-              src="/images/first.png"
-              alt="Alkmi logo"
-              width={535}
-              height={677}
+              src="/images/loader/8.png"
+              alt="Alkmi collection"
+              width={400}
+              height={520}
               priority
             />
           </div>
