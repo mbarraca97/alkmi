@@ -25,9 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden md:overflow-x-visible">
       <body
-        className={`${aboreto.variable} ${lexend.variable} antialiased`}
+        className={`${aboreto.variable} ${lexend.variable} antialiased overflow-x-hidden md:overflow-x-visible`}
       >
         <PageLoader>{children}</PageLoader>
       </body>

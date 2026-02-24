@@ -156,7 +156,7 @@ export default function PageLoader({ children }: PropsWithChildren) {
       {isActive && (
         <div
           ref={overlayRef}
-          className="fixed inset-0 z-[9999] bg-cream"
+          className="fixed inset-0 z-[9999] bg-cream overflow-hidden"
           style={{
             opacity: isFadingOut ? 0 : 1,
             transition: `opacity ${FADE_DURATION_MS}ms ease`,
@@ -192,19 +192,19 @@ export default function PageLoader({ children }: PropsWithChildren) {
 
               <div
                 ref={sliderOuterRef}
-                className="mt-6 w-[400px] overflow-hidden"
+                className="mt-6 w-[300px] overflow-hidden md:w-[400px]"
                 style={{
                   height: isExpanded ? 520 : 3,
                   transition: `height ${EXPAND_DURATION_MS}ms ease`,
                   transform: 'translate3d(0,0,0)',
                 }}
               >
-                <div className="relative h-[520px] w-[400px]">
+                <div className="relative h-[520px] w-[300px] md:w-[400px]">
                   <Image
                     src={slides[slideIndex]}
                     alt="Loading image"
                     fill
-                    sizes="400px"
+                    sizes="(max-width: 768px) 300px, 400px"
                     className="object-cover"
                     priority
                   />
