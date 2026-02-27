@@ -20,28 +20,52 @@ export default function VideoScrollSection() {
     let targetProgress = 0;
     let smoothedProgress = 0;
     let rafId: number | null = null;
-    const FRAME_RATE = 30;
-    const FRAME_TIME = 1 / FRAME_RATE;
-    const MAX_STEP_PER_TICK = FRAME_TIME * 2;
+    let lastRafTs = 0;
 
-    const animateVideoTime = () => {
+    // Optional: quantize seeks to a fixed FPS grid. This can reduce decoder churn,
+    // but it can also look "steppy" (especially on 60/120Hz displays).
+    // Leave as null for smoothest scrubbing.
+    const SEEK_QUANTIZE_FPS: number | null = 30;
+
+    // Limit how fast we seek to avoid huge jumps that can thrash decoding.
+    // Units: seconds of video per second of real time.
+    const MAX_SEEK_RATE = 12;
+
+    // Time constant for smoothing scroll progress into video progress (seconds).
+    const PROGRESS_SMOOTHING_TAU = 0.12;
+
+    const animateVideoTime = (ts: number) => {
+      if (!lastRafTs) lastRafTs = ts;
+      const dt = Math.min((ts - lastRafTs) / 1000, 0.05);
+      lastRafTs = ts;
+
       const maxTime = Math.max(video.duration - 0.01, 0);
-      smoothedProgress += (targetProgress - smoothedProgress) * 0.06;
+      // Exponential smoothing that is stable across different rAF rates.
+      const alpha = 1 - Math.exp(-dt / PROGRESS_SMOOTHING_TAU);
+      smoothedProgress += (targetProgress - smoothedProgress) * alpha;
       const targetTime = maxTime * smoothedProgress;
-      const quantizedTarget = Math.round(targetTime / FRAME_TIME) * FRAME_TIME;
-      const delta = quantizedTarget - video.currentTime;
-      const clampedDelta = Math.max(
-        Math.min(delta, MAX_STEP_PER_TICK),
-        -MAX_STEP_PER_TICK
-      );
-      const nextTime = Math.min(
-        Math.max(video.currentTime + clampedDelta, 0),
-        maxTime
-      );
+
+      const quantizeStep =
+        SEEK_QUANTIZE_FPS && SEEK_QUANTIZE_FPS > 0 ? 1 / SEEK_QUANTIZE_FPS : 0;
+      const desiredTime =
+        quantizeStep > 0
+          ? Math.round(targetTime / quantizeStep) * quantizeStep
+          : targetTime;
+
+      const delta = desiredTime - video.currentTime;
+      const maxStep = Math.max(MAX_SEEK_RATE * dt, 0.001);
+      const clampedDelta = Math.max(Math.min(delta, maxStep), -maxStep);
+
+      const nextTime = Math.min(Math.max(video.currentTime + clampedDelta, 0), maxTime);
 
       // Skip tiny seeks to reduce decoder churn and micro-jitter.
       if (Math.abs(video.currentTime - nextTime) > 0.0005) {
-        video.currentTime = nextTime;
+        // `fastSeek` (when available) can be smoother for rapid scrubbing.
+        if (typeof (video as HTMLVideoElement & { fastSeek?: (time: number) => void }).fastSeek === 'function') {
+          (video as HTMLVideoElement & { fastSeek: (time: number) => void }).fastSeek(nextTime);
+        } else {
+          video.currentTime = nextTime;
+        }
       }
 
       rafId = window.requestAnimationFrame(animateVideoTime);
@@ -108,7 +132,7 @@ export default function VideoScrollSection() {
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
-        src="/video/alkmi.mp4"
+        src="/video/alkmi.mp4?v=2026-02-27"
         muted
         playsInline
         preload="auto"
