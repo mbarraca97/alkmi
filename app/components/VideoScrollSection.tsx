@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -25,8 +26,8 @@ export default function VideoScrollSection() {
     // Optional: quantize seeks to a fixed FPS grid. This can reduce decoder churn,
     // but it can also look "steppy" (especially on 60/120Hz displays).
     // Leave as null for smoothest scrubbing.
-    // Keep this matched to your encoded video's FPS (currently 24fps).
-    const SEEK_QUANTIZE_FPS: number | null = 24;
+    // Keep this matched to your encoded video's FPS (currently 30fps).
+    const SEEK_QUANTIZE_FPS: number | null = 30;
 
     // Limit how fast we seek to avoid huge jumps that can thrash decoding.
     // Units: seconds of video per second of real time.
@@ -77,15 +78,14 @@ export default function VideoScrollSection() {
       existingTrigger.kill();
     }
 
-    // Create the pin/spacer immediately so the next section can't start "under" it.
+    // Scrub the video across the full height of the container (no pin needed —
+    // the video element uses CSS `position: sticky` instead).
     ScrollTrigger.create({
       id: 'video-scroll-trigger',
       trigger: container,
       start: 'top top',
-      end: '+=650%',
+      end: 'bottom bottom',
       scrub: true,
-      pin: true,
-      pinSpacing: true,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         targetProgress = self.progress >= 0.999 ? 1 : self.progress;
@@ -126,19 +126,69 @@ export default function VideoScrollSection() {
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative w-full h-screen overflow-hidden bg-cream"
+    <div
+      ref={containerRef}
+      className="relative w-full bg-cream"
+      style={{ minHeight: '750vh' }} /* 100vh viewport + 650vh scroll distance */
     >
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
-        src="/video/alkmi.mp4?v=2026-03-03"
-        muted
-        playsInline
-        preload="auto"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-sage/20 pointer-events-none" />
+      {/* Sticky video background — stays in view while user scrolls */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden z-0">
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/video/alkmi.mp4?v=2026-03-03-3d"
+          poster="/video/alkmi-poster.jpg?v=2026-03-03-3d"
+          muted
+          playsInline
+          preload="auto"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-sage/20 pointer-events-none" />
+      </div>
+
+      {/* Intro content — scrolls naturally over the sticky video */}
+      <div className="relative z-10 -mt-[100vh]">
+        <div className="mx-auto w-full max-w-[327px] px-0 md:max-w-6xl md:px-8">
+          <div className="flex flex-col items-center">
+            <div className="mt-[120px]">
+              <Image
+                src="/images/Logo.png"
+                alt="Alkmi logo"
+                width={120}
+                height={120}
+                priority
+                className="h-auto w-[120px] md:w-[156px]"
+              />
+            </div>
+
+            <h1 className="font-title font-normal text-[37.74px] leading-[1] tracking-[-1.81px] text-[#30331D] text-center my-[40px] md:text-[94px] md:leading-[1.05] md:tracking-normal">
+              The Art of Color
+              <br />
+              The Spirit of Luxury
+            </h1>
+
+            <div className="mt-[40px]" data-intro-hero>
+              <Image
+                src="/images/loader/8.png"
+                alt="Alkmi collection"
+                width={400}
+                height={520}
+                priority
+              />
+            </div>
+          </div>
+
+          <div className="pb-24 pt-24">
+            <p className="font-title font-normal text-[18px] md:text-[54px] leading-[1.15] text-[#D9DFC6] text-left">
+              ALKMI honors the vital force of reinvention through a blend of elegance
+              and a wild spirit
+              <br />
+              <br />
+              the Alchemy collection pursues modern design, transforming rare treasures
+              into vibrant expressions of individuality.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
