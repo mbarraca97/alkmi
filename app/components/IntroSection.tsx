@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function IntroSection() {
   return (
-    <section className="w-full bg-[#767b5c]">
+    <section className="w-full bg-[url('/images/Comeup_f0000.png')] bg-cover bg-center bg-no-repeat">
       <div className="mx-auto w-full max-w-[327px] px-0 md:max-w-6xl md:px-8">
         <div className="flex flex-col items-center">
           <div className="mt-[120px]">

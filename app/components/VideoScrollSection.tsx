@@ -25,7 +25,8 @@ export default function VideoScrollSection() {
     // Optional: quantize seeks to a fixed FPS grid. This can reduce decoder churn,
     // but it can also look "steppy" (especially on 60/120Hz displays).
     // Leave as null for smoothest scrubbing.
-    const SEEK_QUANTIZE_FPS: number | null = 30;
+    // Keep this matched to your encoded video's FPS (currently 24fps).
+    const SEEK_QUANTIZE_FPS: number | null = 24;
 
     // Limit how fast we seek to avoid huge jumps that can thrash decoding.
     // Units: seconds of video per second of real time.
@@ -132,7 +133,7 @@ export default function VideoScrollSection() {
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
-        src="/video/alkmi.mp4?v=2026-02-27"
+        src="/video/alkmi.mp4?v=2026-03-03"
         muted
         playsInline
         preload="auto"
