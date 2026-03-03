@@ -13,6 +13,7 @@ export default function VideoScrollSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const textRevealRef = useRef<HTMLParagraphElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -115,6 +116,41 @@ export default function VideoScrollSection() {
       });
     }
 
+    // Grow the hero image from the loader card size to its final size
+    // once the page-loader overlay is removed from the DOM.
+    const hero = heroRef.current;
+    let heroObserver: MutationObserver | null = null;
+    if (hero) {
+      const isMd = window.matchMedia('(min-width: 768px)').matches;
+      const loaderW = isMd ? 400 : 300;
+      const loaderH = 520;
+      gsap.set(hero, { width: loaderW, height: loaderH, overflow: 'hidden' });
+
+      const growHero = () => {
+        gsap.to(hero, {
+          width: 480,
+          height: 600,
+          duration: 0.9,
+          ease: 'power2.out',
+          onComplete: () => ScrollTrigger.refresh(),
+        });
+      };
+
+      // If the loader is already gone (e.g. navigated back), grow immediately.
+      if (!document.querySelector('[data-page-loader]')) {
+        growHero();
+      } else {
+        heroObserver = new MutationObserver(() => {
+          if (!document.querySelector('[data-page-loader]')) {
+            heroObserver?.disconnect();
+            heroObserver = null;
+            growHero();
+          }
+        });
+        heroObserver.observe(document.body, { childList: true, subtree: true });
+      }
+    }
+
     const startPlaybackLoopIfReady = () => {
       if (!video.duration || isNaN(video.duration)) return;
       if (rafId === null) {
@@ -134,6 +170,7 @@ export default function VideoScrollSection() {
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId);
       }
+      heroObserver?.disconnect();
       ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.trigger === container || trigger.trigger === textRevealRef.current) {
           trigger.kill();
@@ -183,12 +220,13 @@ export default function VideoScrollSection() {
               The Spirit of Luxury
             </h1>
 
-            <div className="mt-[40px]" data-intro-hero>
+            <div ref={heroRef} className="relative mt-[40px]" data-intro-hero>
               <Image
                 src="/images/loader/8.png"
                 alt="Alkmi collection"
-                width={400}
-                height={520}
+                fill
+                sizes="480px"
+                className="object-cover"
                 priority
               />
             </div>

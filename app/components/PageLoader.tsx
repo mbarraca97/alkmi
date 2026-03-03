@@ -156,6 +156,7 @@ export default function PageLoader({ children }: PropsWithChildren) {
       {isActive && (
         <div
           ref={overlayRef}
+          data-page-loader
           className="fixed inset-0 z-[9999] bg-cream overflow-hidden"
           style={{
             opacity: isFadingOut ? 0 : 1,

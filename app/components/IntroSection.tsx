@@ -29,8 +29,8 @@ export default function IntroSection() {
             <Image
               src="/images/loader/8.png"
               alt="Alkmi collection"
-              width={400}
-              height={520}
+              width={450}
+              height={570}
               priority
             />
           </div>
