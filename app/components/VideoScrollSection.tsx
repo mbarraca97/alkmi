@@ -12,6 +12,7 @@ if (typeof window !== 'undefined') {
 export default function VideoScrollSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const textRevealRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -98,6 +99,22 @@ export default function VideoScrollSection() {
       },
     });
 
+    // Scroll-triggered text reveal: animate each word from #D9DFC6 → #30331D
+    const words = textRevealRef.current?.querySelectorAll<HTMLElement>('.reveal-word');
+    if (words && words.length > 0) {
+      gsap.set(words, { color: '#D9DFC6' });
+      gsap.to(words, {
+        color: '#30331D',
+        stagger: 0.3,
+        scrollTrigger: {
+          trigger: textRevealRef.current,
+          start: 'top 85%',
+          end: 'bottom 50%',
+          scrub: true,
+        },
+      });
+    }
+
     const startPlaybackLoopIfReady = () => {
       if (!video.duration || isNaN(video.duration)) return;
       if (rafId === null) {
@@ -118,7 +135,7 @@ export default function VideoScrollSection() {
         window.cancelAnimationFrame(rafId);
       }
       ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === container) {
+        if (trigger.trigger === container || trigger.trigger === textRevealRef.current) {
           trigger.kill();
         }
       });
@@ -178,13 +195,24 @@ export default function VideoScrollSection() {
           </div>
 
           <div className="pb-24 pt-24">
-            <p className="font-title font-normal text-[18px] md:text-[54px] leading-[1.15] text-[#D9DFC6] text-left">
-              ALKMI honors the vital force of reinvention through a blend of elegance
-              and a wild spirit
+            <p
+              ref={textRevealRef}
+              className="font-title font-normal text-[18px] md:text-[54px] leading-[1.15] text-[#D9DFC6] text-left"
+            >
+              {/* Line 1 */}
+              {'ALKMI honors the vital force of reinvention through a blend of elegance and a wild spirit'
+                .split(' ')
+                .map((word, i) => (
+                  <span key={`l1-${i}`} className="reveal-word">{word} </span>
+                ))}
               <br />
               <br />
-              the Alchemy collection pursues modern design, transforming rare treasures
-              into vibrant expressions of individuality.
+              {/* Line 2 */}
+              {'the Alchemy collection pursues modern design, transforming rare treasures into vibrant expressions of individuality.'
+                .split(' ')
+                .map((word, i) => (
+                  <span key={`l2-${i}`} className="reveal-word">{word} </span>
+                ))}
             </p>
           </div>
         </div>
