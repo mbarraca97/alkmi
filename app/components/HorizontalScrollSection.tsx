@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-function TextoTitulo({
+ function TextoTitulo({
   collection,
   piece,
   description,

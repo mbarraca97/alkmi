@@ -8,6 +8,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
+function TextoTituloVideo({
+  collection,
+  description,
+}: {
+  collection: string;
+  piece: string;
+  description: string;
+}) {
+  return (
+    <div className="text-left">
+      <h3 className="font-title font-normal text-[29px] leading-[1] text-[#D9DFC6] md:text-[clamp(45px,4.48vw,88px)]">
+      {collection}
+      </h3>
+      <p className="font-content font-light text-[8px] leading-[1.55] text-[#30331D]/90 max-w-[380px] md:text-[clamp(20px,1.08vw,19px)] ">
+        {description}
+      </p>
+    </div>
+  );
+}
 
 export default function VideoScrollSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -151,6 +170,24 @@ export default function VideoScrollSection() {
       }
     }
 
+    // Scroll-triggered scale-up for the hero image
+    if (hero) {
+      gsap.fromTo(
+        hero,
+        { scale: 1 },
+        {
+          scale: 1.15,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top 90%',
+            end: 'bottom 20%',
+            scrub: true,
+          },
+        },
+      );
+    }
+
     const startPlaybackLoopIfReady = () => {
       if (!video.duration || isNaN(video.duration)) return;
       if (rafId === null) {
@@ -205,7 +242,7 @@ export default function VideoScrollSection() {
           <div className="flex flex-col items-center">
             <div className="mt-[120px]">
               <Image
-                src="/images/Logo.png"
+                src="/images/LogoTop.png"
                 alt="Alkmi logo"
                 width={120}
                 height={120}
@@ -253,8 +290,28 @@ export default function VideoScrollSection() {
                 ))}
             </p>
           </div>
+
+          <div className="flex justify-start pt-[400px] ml-[-100px]">
+          <TextoTituloVideo
+                    collection="Alchemy"
+                    piece="Prism Veil Earrings"
+                    description="Two silhouettes in conversation: sharp sparkle against soft glow. A modern heirloom that pairs refinement with a streak of untamed energy."
+                  />
+          </div>
+          <div className="flex justify-end pt-[1700px] mr-[-100px]">
+          <TextoTituloVideo
+                    collection="Alchemy"
+                    piece="Prism Veil Earrings"
+                    description="Two silhouettes in conversation: sharp sparkle against soft glow. A modern heirloom that pairs refinement with a streak of untamed energy."
+                  />
+          </div>
+          <div className="flex justify-start pt-[1000px] ml-[-100px]">
+            <a className='text-left text-[#30331D] font-title text-[170px] leading-[1.15]  transition-colors duration-300' >Alchemy collection</a>
+         
+          </div>
         </div>
       </div>
+      
     </div>
   );
 }
