@@ -1,17 +1,80 @@
 'use client';
 
 import Image from 'next/image';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+
+const CAROUSEL_IMAGES = [
+  '/images/finalsection/Rectangle 10.png',
+  '/images/finalsection/Rectangle 20.png',
+  '/images/horizontal/Rectangle 10.png',
+  '/images/horizontal/Rectangle 11.png',
+  '/images/horizontal/Rectangle 12.png',
+];
+
+const MOBILE_CAROUSEL_GAP = 32; // px — matches gap-8
+const DESKTOP_CAROUSEL_GAP = 64; // px — matches gap-16
+const DESKTOP_LEFT_WIDTH = 472;
+const DESKTOP_LEFT_HEIGHT = 326;
+const DESKTOP_RIGHT_WIDTH = 700;
 
 export default function FinalSection() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState('');
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const formTextSize = useMemo(
     () => 'text-[33px] md:text-[clamp(44px,6.2vw,112.22px)]',
     []
   );
+
+  /* Clone first 2 images at the end so the loop is seamless when 2 are visible */
+  const allImages = useMemo(
+    () => [...CAROUSEL_IMAGES, CAROUSEL_IMAGES[0], CAROUSEL_IMAGES[1]],
+    []
+  );
+
+  useEffect(() => {
+    const measure = () => {
+      const el = carouselRef.current;
+      if (!el) return;
+      setSlideWidth(el.offsetWidth);
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (carouselRef.current) ro.observe(carouselRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  /* Carousel — auto-advance every 4 s */
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setSlideIndex((prev) => prev + 1);
+    }, 4000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  /* Infinite loop: when we reach the clone region, instantly jump back to 0 */
+  useEffect(() => {
+    if (slideIndex !== CAROUSEL_IMAGES.length) return;
+    const timeout = setTimeout(() => {
+      setTransitionEnabled(false);
+      setSlideIndex(0);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionEnabled(true);
+        });
+      });
+    }, 700); // must match the CSS transition duration
+    return () => clearTimeout(timeout);
+  }, [slideIndex]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -39,31 +102,98 @@ export default function FinalSection() {
         </p>
       </div>
 
-      {/* Image block */}
-      <div className="mt-10 w-full md:mt-14 md:h-[1147px]">
-        <div className="flex w-full flex-col gap-8 md:h-full md:flex-row md:items-stretch md:justify-between md:gap-16">
-          <div className="flex w-full items-center justify-start md:h-full md:flex-1 md:justify-center">
-            <Image
-              src="/images/finalsection/TOM08449 1.png"
-              alt="ALKMI craftsmanship"
-              width={432}
-              height={296}
-              sizes="(max-width: 768px) 200px, 432px"
-              className="object-contain w-[200px] h-auto md:w-[432px]"
-            />
+      {/* Image carousel */}
+      <div
+        ref={carouselRef}
+        className="mt-10 w-full md:mt-14"
+      >
+        {/* Mobile: single image carousel */}
+        <div className="h-[250px] overflow-hidden md:hidden">
+          <div
+            className="flex h-full"
+            style={{
+              gap: `${MOBILE_CAROUSEL_GAP}px`,
+              transform: slideWidth
+                ? `translateX(-${slideIndex * (slideWidth + MOBILE_CAROUSEL_GAP)}px)`
+                : undefined,
+              transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
+            }}
+          >
+            {allImages.map((src, i) => (
+              <div
+                key={`m-${i}`}
+                className="relative h-full flex-shrink-0"
+                style={{ width: slideWidth ? `${slideWidth}px` : '100%' }}
+              >
+                <Image
+                  src={src}
+                  alt="ALKMI atelier"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: 2-slot carousel where right image becomes left */}
+        <div className="hidden h-[1147px] items-stretch gap-16 overflow-hidden md:flex">
+          <div
+            className="relative shrink-0 self-center overflow-hidden"
+            style={{ width: `${DESKTOP_LEFT_WIDTH}px`, height: `${DESKTOP_LEFT_HEIGHT}px` }}
+          >
+            <div
+              className="flex h-full"
+              style={{
+                gap: `${DESKTOP_CAROUSEL_GAP}px`,
+                transform: `translateX(-${slideIndex * (DESKTOP_RIGHT_WIDTH + DESKTOP_CAROUSEL_GAP)}px)`,
+                transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
+              }}
+            >
+              {allImages.map((src, i) => (
+                <div
+                  key={`dl-${i}`}
+                  className="relative h-full shrink-0"
+                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px` }}
+                >
+                  <Image
+                    src={src}
+                    alt="ALKMI craftsmanship"
+                    fill
+                    sizes="472px"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex w-full justify-end md:block md:w-auto">
-            <div className="relative h-[200px] w-[200px] shrink-0 md:h-full md:w-[700px]">
-            <Image
-              src="/images/finalsection/Rectangle 10.png"
-              alt="ALKMI atelier"
-              fill
-              sizes="(max-width: 768px) 200px, 700px"
-              className="object-cover"
-              priority={false}
-            />
-          </div>
+          <div className="relative h-full w-[700px] shrink-0 overflow-hidden">
+            <div
+              className="flex h-full"
+              style={{
+                gap: `${DESKTOP_CAROUSEL_GAP}px`,
+                transform: `translateX(-${(slideIndex + 1) * (DESKTOP_RIGHT_WIDTH + DESKTOP_CAROUSEL_GAP)}px)`,
+                transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
+              }}
+            >
+              {allImages.map((src, i) => (
+                <div
+                  key={`dr-${i}`}
+                  className="relative h-full shrink-0"
+                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px` }}
+                >
+                  <Image
+                    src={src}
+                    alt="ALKMI atelier"
+                    fill
+                    sizes="700px"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
