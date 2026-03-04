@@ -113,8 +113,8 @@ export default function HorizontalScrollSection() {
           className="flex flex-col md:flex-row md:h-full"
         >
           {/* Panel 1 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-center md:justify-between md:py-0 xl:gap-20">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
                   collection="Alchemy"
@@ -149,10 +149,10 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 2 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-start md:justify-between md:gap-10 md:py-0 md:pt-16 xl:gap-20">
-              <div className="flex w-full flex-col gap-10 md:h-full md:w-auto md:justify-between md:gap-0 md:pb-16">
-                <div className="w-full max-w-[680px] md:max-w-[min(680px,46vw)]">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-10 xl:gap-20">
+              <div className="flex w-full flex-col gap-10 md:h-full md:w-auto md:justify-between md:gap-0">
+                <div className="w-full max-w-[680px] md:max-w-[min(680px,46vw)] mt-[60px]">
                   <TextoTitulo
                     collection="Alchemy"
                     piece="Prism Veil Earrings"
@@ -160,13 +160,13 @@ export default function HorizontalScrollSection() {
                   />
                 </div>
 
-                <div className="relative h-[clamp(220px,52vw,430px)] w-full max-w-[550px] md:h-[clamp(200px,24vw,430px)] md:w-[clamp(260px,30vw,550px)]">
+                <div className="relative h-[clamp(220px,52vw,430px)] w-full max-w-[450px] md:h-[clamp(100px,14vw,430px)] md:w-[clamp(260px,30vw,550px)]">
                   <Image
                     src="/images/horizontal/Rectangle 11.png"
                     alt="Prism Veil detail"
                     fill
-                    sizes="550px"
-                    className="object-cover"
+                    sizes="450px"
+                    className="object-cover mt-[-60px]"
                   />
                 </div>
               </div>
@@ -184,8 +184,8 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 3 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-center md:justify-between md:py-0 xl:gap-20">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
                   collection="Alchemy"
@@ -207,8 +207,8 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 4 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-center md:justify-between md:py-0 xl:gap-20">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
               <div className="relative h-[clamp(260px,52vw,630px)] w-full max-w-[950px] md:h-[clamp(260px,36vw,630px)] md:w-[clamp(420px,52vw,950px)]">
                 <Image
                   src="/images/horizontal/Rectangle 13.png"
@@ -230,8 +230,8 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 5 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-center md:justify-between md:py-0 xl:gap-20">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
               <div className="relative h-[clamp(520px,92vw,1000px)] w-full max-w-[950px] md:h-[clamp(520px,74vh,1000px)] md:w-[clamp(420px,52vw,950px)]">
                 <Image
                   src="/images/horizontal/Rectangle 14.png"
@@ -265,8 +265,8 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 6 */}
-          <section className="flex-shrink-0 w-full  px-6 md:w-screen md:h-full md:min-h-0 md:px-12 xl:px-16">
-            <div className="flex flex-col gap-10 py-12 md:h-full md:flex-row md:items-end md:justify-between md:gap-10 md:py-0 md:pb-16 xl:gap-20">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-10 xl:gap-20">
               <div className="relative h-[clamp(260px,52vw,540px)] w-full max-w-[860px] md:h-[clamp(260px,34vw,540px)] md:w-[clamp(380px,48vw,860px)]">
                 <Image
                   src="/images/horizontal/Rectangle 16.png"
@@ -288,7 +288,7 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 7 */}
-          <section className="flex-shrink-0 w-full  px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-16 xl:px-16">
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
             <div className="relative w-full flex flex-col gap-10 md:h-full md:block">
               <div className="relative md:absolute md:left-0 md:top-0">
                 <div className="relative h-[clamp(180px,44vw,420px)] w-full max-w-[750px] md:h-[clamp(140px,24vw,420px)] md:w-[clamp(260px,38vw,750px)]">
@@ -317,7 +317,7 @@ export default function HorizontalScrollSection() {
           </section>
 
           {/* Panel 8 — Video */}
-          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-0 xl:px-16" style={{ backgroundColor: '#686C52' }}>
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16" style={{ backgroundColor: '#686C52' }}>
             <div className="flex h-full items-center justify-center">
               <video
                 className="w-full max-w-[1228px]"

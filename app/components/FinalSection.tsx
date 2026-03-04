@@ -15,7 +15,8 @@ const MOBILE_CAROUSEL_GAP = 32; // px — matches gap-8
 const DESKTOP_CAROUSEL_GAP = 64; // px — matches gap-16
 const DESKTOP_LEFT_WIDTH = 472;
 const DESKTOP_LEFT_HEIGHT = 326;
-const DESKTOP_RIGHT_WIDTH = 700;
+const DESKTOP_RIGHT_WIDTH = 600;
+const DESKTOP_RIGHT_HEIGHT = 907;
 
 export default function FinalSection() {
   const [name, setName] = useState('');
@@ -169,7 +170,7 @@ export default function FinalSection() {
             </div>
           </div>
 
-          <div className="relative h-full w-[700px] shrink-0 overflow-hidden">
+          <div className="relative h-full ml-[160px] w-[600px] shrink-0 overflow-hidden">
             <div
               className="flex h-full"
               style={{
@@ -182,7 +183,7 @@ export default function FinalSection() {
                 <div
                   key={`dr-${i}`}
                   className="relative h-full shrink-0"
-                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px` }}
+                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px`, height: `${DESKTOP_RIGHT_HEIGHT}px` }}
                 >
                   <Image
                     src={src}
