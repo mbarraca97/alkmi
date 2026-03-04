@@ -315,6 +315,21 @@ export default function HorizontalScrollSection() {
               </div>
             </div>
           </section>
+
+          {/* Panel 8 — Video */}
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-0 xl:px-16" style={{ backgroundColor: '#686C52' }}>
+            <div className="flex h-full items-center justify-center">
+              <video
+                className="w-full max-w-[1228px]"
+                style={{ aspectRatio: '1228 / 698', objectFit: 'cover' }}
+                src="/video/alkmi.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            </div>
+          </section>
         </div>
       </div>
     </div>
