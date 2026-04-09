@@ -153,23 +153,23 @@ a quiet elegance with cool, celestial tones and a refined sense of
 mystery."    />
               </div>
 
-              <div className="flex w-full flex-row gap-6 md:w-auto">
-                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+              <div className="flex w-full flex-row gap-4 md:w-auto">
+                <div className="relative h-[250px] w-full max-w-[400px] md:h-[clamp(550px,600px,800px)] md:w-[clamp(260px,34vw,700px)]">
                   <Image
                     src="images/horiz/1-1.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
                 </div>
-                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+                <div className="relative h-[250px] w-full max-w-[400px] md:h-[clamp(550px,600px,800px)] md:w-[clamp(260px,34vw,700px)]">
                   <Image
                     src="images/horiz/1-2.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
@@ -181,7 +181,7 @@ mystery."    />
        {/* Panel 2 */}
        <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
-              <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)] ml-[60px]">
+              <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)] md:ml-[60px]">
                 <TextoTitulo
                   collection="Alchemy"
                   piece="Aurea Collection"
@@ -190,23 +190,23 @@ expressive collection that brings warmth, femininity, and light to
 every piece."    />
               </div>
 
-              <div className="flex w-full flex-row gap-6 md:w-auto">
-                <div className="relative md:h-[clamp(250px,300px,400px)] w-full max-w-[400px] md:w-[clamp(250px,300px,400px)]">
+              <div className="flex w-full flex-row gap-4 md:w-auto">
+                <div className="relative h-[180px] w-full max-w-[400px] md:h-[clamp(250px,300px,400px)] md:w-[clamp(250px,300px,400px)]">
                   <Image
                     src="images/horiz/2-1.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
                 </div>
-                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+                <div className="relative h-[280px] w-full max-w-[400px] md:h-[clamp(550px,600px,800px)] md:w-[clamp(260px,34vw,700px)]">
                   <Image
                     src="images/horiz/2-2.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
@@ -226,23 +226,23 @@ every piece."    />
 and a grounded beauty inspired by the richness of the natural world."  />
               </div>
 
-              <div className="flex w-full flex-col gap-6 md:w-auto">
-              <div className="relative md:h-[clamp(150px,300px,400px)] w-full max-w-[800px] md:w-[clamp(550px,700px,800px)]">
+              <div className="flex w-full flex-col gap-4 md:w-auto">
+                <div className="relative h-[160px] w-full max-w-[800px] md:h-[clamp(150px,300px,400px)] md:w-[clamp(550px,700px,800px)]">
                   <Image
                     src="images/horiz/3-1.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 100vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
                 </div>
-                <div className="relative md:h-[clamp(150px,300px,400px)] w-full max-w-[800px] md:w-[clamp(550px,700px,800px)]">
+                <div className="relative h-[160px] w-full max-w-[800px] md:h-[clamp(150px,300px,400px)] md:w-[clamp(550px,700px,800px)]">
                   <Image
                     src="images/horiz/3-2.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 100vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
@@ -339,23 +339,23 @@ signature tones of the brand, creating a radiant expression of
 harmony, light, and versatility."    />
               </div>
 
-              <div className="flex w-full flex-row gap-6 md:w-auto">
-                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+              <div className="flex w-full flex-row gap-4 md:w-auto">
+                <div className="relative h-[250px] w-full max-w-[400px] md:h-[clamp(550px,600px,800px)] md:w-[clamp(260px,34vw,700px)]">
                   <Image
                     src="images/horiz/TOM07900-2.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />
                 </div>
-                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+                <div className="relative h-[250px] w-full max-w-[400px] md:h-[clamp(550px,600px,800px)] md:w-[clamp(260px,34vw,700px)]">
                   <Image
                     src="images/horiz/TOM07924-4.jpg"
                     alt="Alchemy collection"
                     fill
-                    sizes="800px"
+                    sizes="(max-width: 767px) 50vw, 800px"
                     className="object-cover"
                     priority={false}
                   />

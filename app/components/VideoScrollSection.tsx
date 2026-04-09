@@ -335,11 +335,12 @@ offering women a new way to express themselves
 through color, character, and confidence."
                   />
           </div>
-          <div className="flex justify-start pt-[500px] ml-0 md:pt-[1000px] md:ml-[-100px]">
-            <a className='text-left text-[#30331D] font-title text-[60px] md:text-[170px] leading-[1.15] transition-colors duration-300' >Alchemy collection</a>
-         
-          </div>
         </div>
+      </div>
+
+      {/* "Alchemy collection" label — appears at the very bottom of the scroll section */}
+      <div className="absolute bottom-0 left-0 px-6 pb-12 md:px-0 md:pb-24 md:ml-[80px]">
+        <a className="text-left text-[#30331D] font-title text-[60px] md:text-[clamp(60px,8vw,120px)] leading-[1.15] transition-colors duration-300">Alchemy <br/> collection</a>
       </div>
       
     </div>
