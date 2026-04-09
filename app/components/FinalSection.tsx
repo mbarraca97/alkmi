@@ -96,10 +96,9 @@ export default function FinalSection() {
         </h2>
 
         <p className="font-content font-light text-[16px] leading-[1.45] text-[#30331D] text-left max-w-[700px] md:text-[24px]">
-          Every ALKMI creation is born, shaped and perfected in-house. From the
-          first spark of inspiration to the final expression, each step unfolds
-          under one vision — ensuring absolute control, authenticity and
-          excellence.
+        Harnessing cutting-edge technology and master craftsmanship, our factory is
+a true reflection of our pursuit of perfection. From concept to creation, every
+step of the process happens in-house. It is a complete end-to-end journey hat ensures precision, independence, and innovation at every stage.
         </p>
       </div>
 
@@ -139,7 +138,7 @@ export default function FinalSection() {
         </div>
 
         {/* Desktop: 2-slot carousel where right image becomes left */}
-        <div className="hidden h-[1147px] items-stretch gap-16 overflow-hidden md:flex">
+        <div className="hidden h-[1147px] items-stretch gap-16 overflow-hidden md:flex md:justify-center">
           <div
             className="relative shrink-0 self-center overflow-hidden"
             style={{ width: `${DESKTOP_LEFT_WIDTH}px`, height: `${DESKTOP_LEFT_HEIGHT}px` }}
@@ -170,7 +169,7 @@ export default function FinalSection() {
             </div>
           </div>
 
-          <div className="relative h-full ml-[160px] w-[600px] shrink-0 overflow-hidden">
+          <div className="relative h-full w-[600px] shrink-0 overflow-hidden">
             <div
               className="flex h-full"
               style={{

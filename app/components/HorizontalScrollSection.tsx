@@ -90,7 +90,7 @@ export default function HorizontalScrollSection() {
         },
       });
 
-      // If images affect layout, this ensures ScrollTrigger recalculates once they're loaded.
+        // Recalculate once all images are loaded so dimensions are correct.
       const handleLoad = () => ScrollTrigger.refresh();
       window.addEventListener('load', handleLoad);
 
@@ -369,10 +369,21 @@ harmony, light, and versatility."    />
           {/* Panel 8 — Video */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16" style={{ backgroundColor: '#686C52' }}>
             <div className="flex h-full items-center justify-center">
+              {/* Desktop */}
               <video
-                className="w-full max-w-[1228px]"
+                className="hidden w-full max-w-[1228px] md:block"
                 style={{ aspectRatio: '1228 / 698', objectFit: 'cover' }}
-                src="/video/alkmi.mp4"
+                src="/video/alkmi-horizontal.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+              {/* Mobile */}
+              <video
+                className="block w-full md:hidden"
+                style={{ aspectRatio: '9 / 16', objectFit: 'cover', maxHeight: '80vh' }}
+                src="/video/alkmi-vertical.mp4"
                 autoPlay
                 loop
                 muted

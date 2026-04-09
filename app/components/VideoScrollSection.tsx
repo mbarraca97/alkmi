@@ -18,10 +18,10 @@ function TextoTituloVideo({
 }) {
   return (
     <div className="text-left">
-      <h3 className="font-title font-normal text-[29px] leading-[1] text-[#D9DFC6] md:text-[clamp(45px,4.48vw,88px)]">
+      <h3 className="font-title font-normal text-[58px] leading-[1] text-[#D9DFC6] md:text-[clamp(45px,4.48vw,88px)]">
       {collection}
       </h3>
-      <p className="font-content font-light text-[8px] leading-[1.55] text-[#30331D]/90 max-w-[380px] md:text-[clamp(20px,1.08vw,19px)] ">
+      <p className="font-content font-light text-[16px] leading-[1.55] text-[#30331D]/90 max-w-[380px] md:text-[clamp(20px,1.08vw,19px)] ">
         {description}
       </p>
     </div>
