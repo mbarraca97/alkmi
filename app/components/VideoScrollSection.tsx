@@ -39,6 +39,21 @@ export default function VideoScrollSection() {
     const container = containerRef.current;
 
     if (!video || !container || typeof window === 'undefined') return;
+
+    // Set the correct video source based on viewport size.
+    // Mobile gets a portrait-oriented video; desktop keeps the original.
+    const isMdScreen = window.matchMedia('(min-width: 768px)').matches;
+    const desiredSrc = isMdScreen
+      ? '/video/alkmi.mp4?v=2026-03-03-3d'
+      : '/video/alkmiMobile.mp4';
+    if (!video.src || !video.src.includes(desiredSrc)) {
+      video.src = desiredSrc;
+      if (isMdScreen) {
+        video.poster = '/video/alkmi-poster.jpg?v=2026-03-03-3d';
+      }
+      video.load();
+    }
+
     let targetProgress = 0;
     let smoothedProgress = 0;
     let rafId: number | null = null;
@@ -227,8 +242,6 @@ export default function VideoScrollSection() {
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
-          src="/video/alkmi.mp4?v=2026-03-03-3d"
-          poster="/video/alkmi-poster.jpg?v=2026-03-03-3d"
           muted
           playsInline
           preload="auto"
@@ -275,7 +288,7 @@ export default function VideoScrollSection() {
               className="font-title font-normal text-[18px] md:text-[54px] leading-[1.15] text-[#D9DFC6] text-left"
             >
               {/* Line 1 */}
-              {'ALKMI honors the vital force of reinvention through a blend of elegance and a wild spirit'
+              {'ALKMI is a high jewelry brand created by AJ Jewels, a place where tradition meets creative freedom.'
                 .split(' ')
                 .map((word, i) => (
                   <span key={`l1-${i}`} className="reveal-word">{word} </span>
@@ -283,30 +296,47 @@ export default function VideoScrollSection() {
               <br />
               <br />
               {/* Line 2 */}
-              {'the Alchemy collection pursues modern design, transforming rare treasures into vibrant expressions of individuality.'
+              {'A captivating new world where color, character, and great craftsmanship converge to shape jewels that are bold, disruptive, and unmistakably ALKMI.'
                 .split(' ')
                 .map((word, i) => (
                   <span key={`l2-${i}`} className="reveal-word">{word} </span>
                 ))}
+              <br />
+              <br />
+              {/* Line 3 */}
+              {'Just like alchemy transforms the ordinary into the extraordinary, ALKMI honors the vital force of reinvention, through a mix of elegance with a wild soul - just like the women we create for.'
+                .split(' ')
+                .map((word, i) => (
+                  <span key={`l3-${i}`} className="reveal-word">{word} </span>
+                ))}
             </p>
           </div>
 
-          <div className="flex justify-start pt-[400px] ml-[-100px]">
+          <div className="flex justify-start pt-[200px] ml-0 md:pt-[400px] md:ml-[-100px]">
           <TextoTituloVideo
                     collection="Alchemy"
                     piece="Prism Veil Earrings"
-                    description="Two silhouettes in conversation: sharp sparkle against soft glow. A modern heirloom that pairs refinement with a streak of untamed energy."
+                    description="At the heart of the brand is our signature light
+green inspired by the green sapphire, a stone
+that embodies both natural elegance and
+inner strength, inspiring transformation and
+bold individuality through beauty and color."
                   />
           </div>
-          <div className="flex justify-end pt-[1700px] mr-[-100px]">
+          <div className="flex justify-end pt-[800px] mr-0 md:pt-[1700px] md:mr-[-100px]">
           <TextoTituloVideo
                     collection="Alchemy"
                     piece="Prism Veil Earrings"
-                    description="Two silhouettes in conversation: sharp sparkle against soft glow. A modern heirloom that pairs refinement with a streak of untamed energy."
+                    description="With contemporary designs rooted on the legacy of
+multi-shaped stones, ALKMI reimagines fine jewelry
+through bold color combinations and distinctive,
+innovative details, like our light green titanium,
+offering women a new way to express themselves
+through color, character, and confidence."
                   />
           </div>
-          <div className="flex justify-start pt-[1000px] ml-[-100px]">
-            <a className='text-left text-[#30331D] font-title text-[170px] leading-[1.15]  transition-colors duration-300' >Alchemy collection</a>
+          <div className="flex justify-start pt-[500px] ml-0 md:pt-[1000px] md:ml-[-100px]">
+            <a className='text-left text-[#30331D] font-title text-[60px] md:text-[170px] leading-[1.15] transition-colors duration-300' >Alchemy collection</a>
          
           </div>
         </div>

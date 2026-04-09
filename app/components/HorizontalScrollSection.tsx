@@ -13,20 +13,25 @@ if (typeof window !== 'undefined') {
   collection,
   piece,
   description,
+  light,
 }: {
-  collection: string;
+  collection?: string;
   piece: string;
   description: string;
+  light?: boolean;
 }) {
+  const color = light ? '#D9DFC6' : '#474C2C';
   return (
     <div className="text-left">
-      <h3 className="font-title font-normal text-[43px] leading-[1.02] text-[#474C2C] md:text-[clamp(56px,5.6vw,110px)]">
-        {collection}
-      </h3>
-      <h4 className="font-title font-normal text-[25px] leading-[1.05] text-[#474C2C] mt-[clamp(16px,2.1vw,30px)] mb-[clamp(16px,2.1vw,30px)] md:text-[clamp(32px,3.2vw,64px)]">
+      {collection && (
+        <h3 className="font-title font-normal text-[43px] leading-[1.02] md:text-[clamp(56px,5.6vw,110px)]" style={{ color }}>
+          {collection}
+        </h3>
+      )}
+      <h4 className={`font-title font-normal text-[25px] leading-[1.05] mb-[clamp(16px,2.1vw,30px)] md:text-[clamp(32px,3.2vw,64px)]${collection ? ' mt-[clamp(16px,2.1vw,30px)]' : ''}`} style={{ color }}>
         {piece}
       </h4>
-      <p className="font-content font-light text-[10px] leading-[1.55] text-[#474C2C]/90 max-w-[160px] md:text-[clamp(16px,1.35vw,24px)] md:max-w-[min(620px,42vw)]">
+      <p className="font-content font-light text-[10px] leading-[1.55] max-w-[160px] md:text-[clamp(16px,1.35vw,24px)] md:max-w-[min(620px,42vw)] whitespace-pre-line" style={{ color: light ? 'rgba(217,223,198,0.9)' : 'rgba(71,76,44,0.9)' }}>
         {description}
       </p>
     </div>
@@ -112,21 +117,46 @@ export default function HorizontalScrollSection() {
           ref={scrollContainerRef}
           className="flex flex-col md:flex-row md:h-full"
         >
+          {/* Panel 0 — Hero */}
+          <section className="relative flex-shrink-0 w-full overflow-hidden md:w-screen md:h-full md:min-h-0" style={{ minHeight: 'clamp(520px, 100vh, 1080px)' }}>
+            <Image
+              src="/images/horizontal/alchemy-collection-hero.jpg"
+              alt="Alchemy Collection"
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority
+            />
+            {/* subtle dark gradient on the left so text stays legible */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
+            <div className="relative z-10 flex h-full items-center px-6 py-12 md:px-16 xl:px-24">
+              <div className="text-left w-full max-w-[480px] md:max-w-[min(540px,38vw)] mt-[300px]">
+                <h4 className="font-title font-normal text-[19px] leading-[1.05] text-[#D9DFC6] mb-[clamp(10px,1.1vw,16px)] md:text-[clamp(22px,2.6vw,42px)]">
+                  Alchemy Collection
+                </h4>
+                <p className="font-content font-light text-[14px] leading-[1.55] text-[#D9DFC6]/90 whitespace-pre-line md:text-[clamp(14px,1vw,16px)]">
+                  {`Inspired by the ancient art of alchemy, our collections reflect ALKMI's devotion to transformation and refined design. Crafted in 18K yellow gold and adorned with multi-shaped colored gemstones and natural diamonds, each piece is a bold statement of personal expression.\n\nA whisper of a light green detail in the setting adds a modern and innovative signature touch to every jewel, a subtle yet striking detail that brings a contemporary twist to tradition.`}
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Panel 1 */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
                   collection="Alchemy"
-                  piece="Auric Bloom Ring"
-                  description="A luminous statement forged from rare stones and bold geometry—balanced to feel effortless, designed to catch light with every movement."
-                />
+                  piece="Selene Collection"
+                  description="A luminous collection centered around tanzanite, Selene captures
+a quiet elegance with cool, celestial tones and a refined sense of
+mystery."    />
               </div>
 
-              <div className="flex w-full flex-col gap-8 md:w-auto">
-                <div className="relative h-[clamp(150px,38vw,380px)] w-full max-w-[700px] md:h-[clamp(150px,18vw,380px)] md:w-[clamp(260px,34vw,700px)]">
+              <div className="flex w-full flex-row gap-6 md:w-auto">
+                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
                   <Image
-                    src="/images/horizontal/Rectangle 8.png"
+                    src="images/horiz/1-1.jpg"
                     alt="Alchemy collection"
                     fill
                     sizes="800px"
@@ -134,9 +164,9 @@ export default function HorizontalScrollSection() {
                     priority={false}
                   />
                 </div>
-                <div className="relative h-[clamp(150px,38vw,380px)] w-full max-w-[700px] md:h-[clamp(150px,18vw,380px)] md:w-[clamp(260px,34vw,700px)]">
+                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
                   <Image
-                    src="/images/horizontal/Rectangle 9.png"
+                    src="images/horiz/1-2.jpg"
                     alt="Alchemy collection"
                     fill
                     sizes="800px"
@@ -148,82 +178,112 @@ export default function HorizontalScrollSection() {
             </div>
           </section>
 
-          {/* Panel 2 */}
-          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-10 xl:gap-20">
-              <div className="flex w-full flex-col gap-10 md:h-full md:w-auto md:justify-between md:gap-0">
-                <div className="w-full max-w-[680px] md:max-w-[min(680px,46vw)] mt-[60px]">
-                  <TextoTitulo
-                    collection="Alchemy"
-                    piece="Prism Veil Earrings"
-                    description="Two silhouettes in conversation: sharp sparkle against soft glow. A modern heirloom that pairs refinement with a streak of untamed energy."
-                  />
-                </div>
-
-                <div className="relative h-[clamp(220px,52vw,430px)] w-full max-w-[450px] md:h-[clamp(100px,14vw,430px)] md:w-[clamp(260px,30vw,550px)]">
-                  <Image
-                    src="/images/horizontal/Rectangle 11.png"
-                    alt="Prism Veil detail"
-                    fill
-                    sizes="450px"
-                    className="object-cover mt-[-60px]"
-                  />
-                </div>
+       {/* Panel 2 */}
+       <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
+              <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)] ml-[60px]">
+                <TextoTitulo
+                  collection="Alchemy"
+                  piece="Aurea Collection"
+                  description="Defined by the soft glow of pink tourmaline, Aura is a delicate yet
+expressive collection that brings warmth, femininity, and light to
+every piece."    />
               </div>
 
-              <div className="relative h-[clamp(520px,92vw,990px)] w-full max-w-[850px] md:h-[clamp(520px,74vh,990px)] md:w-[clamp(360px,48vw,850px)]">
-                <Image
-                  src="/images/horizontal/Rectangle 10.png"
-                  alt="Prism Veil"
-                  fill
-                  sizes="850px"
-                  className="object-cover"
-                />
+              <div className="flex w-full flex-row gap-6 md:w-auto">
+                <div className="relative md:h-[clamp(250px,300px,400px)] w-full max-w-[400px] md:w-[clamp(250px,300px,400px)]">
+                  <Image
+                    src="images/horiz/2-1.jpg"
+                    alt="Alchemy collection"
+                    fill
+                    sizes="800px"
+                    className="object-cover"
+                    priority={false}
+                  />
+                </div>
+                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
+                  <Image
+                    src="images/horiz/2-2.jpg"
+                    alt="Alchemy collection"
+                    fill
+                    sizes="800px"
+                    className="object-cover"
+                    priority={false}
+                  />
+                </div>
               </div>
             </div>
           </section>
 
           {/* Panel 3 */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
                   collection="Alchemy"
-                  piece="Emberline Bracelet"
-                  description="A fluid arc of color that wraps like a quiet flame—crafted to feel weightless, yet bold enough to define the entire look."
-                />
+                  piece="Terra Collection"
+                  description="With medium teal sapphire at its heart, Terra reflects depth, balance,
+and a grounded beauty inspired by the richness of the natural world."  />
               </div>
 
-              <div className="relative h-[clamp(260px,52vw,630px)] w-full max-w-[950px] md:h-[clamp(260px,36vw,630px)] md:w-[clamp(420px,52vw,950px)]">
-                <Image
-                  src="/images/horizontal/Rectangle 12.png"
-                  alt="Emberline Bracelet"
-                  fill
-                  sizes="950px"
-                  className="object-cover"
-                />
+              <div className="flex w-full flex-col gap-6 md:w-auto">
+              <div className="relative md:h-[clamp(150px,300px,400px)] w-full max-w-[800px] md:w-[clamp(550px,700px,800px)]">
+                  <Image
+                    src="images/horiz/3-1.jpg"
+                    alt="Alchemy collection"
+                    fill
+                    sizes="800px"
+                    className="object-cover"
+                    priority={false}
+                  />
+                </div>
+                <div className="relative md:h-[clamp(150px,300px,400px)] w-full max-w-[800px] md:w-[clamp(550px,700px,800px)]">
+                  <Image
+                    src="images/horiz/3-2.jpg"
+                    alt="Alchemy collection"
+                    fill
+                    sizes="800px"
+                    className="object-cover"
+                    priority={false}
+                  />
+                </div>
               </div>
             </div>
           </section>
 
-          {/* Panel 4 */}
-          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
-              <div className="relative h-[clamp(260px,52vw,630px)] w-full max-w-[950px] md:h-[clamp(260px,36vw,630px)] md:w-[clamp(420px,52vw,950px)]">
+               {/* Panel 4 */}
+               <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
+         
+
+              <div className="flex w-full flex-col gap-6 md:w-auto">
+                <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
+                  <TextoTitulo
+                    collection="Alchemy"
+                    piece="Riva Collection"
+                    description="A striking collection shaped by the timeless intensity of blue sapphires
+and aquamarines, Riva embodies clarity, confidence, and understated
+sophistication."/>
+                </div>
+
+                <div className="relative h-[clamp(300px,72vw,540px)] w-full max-w-[420px] md:h-[clamp(250px,300px,450px)] md:w-[clamp(250px,300px,450px)]">
+                  <Image
+                    src="images/horiz/4-1.jpg"
+                    alt="Wildfire Signet detail"
+                    fill
+                    sizes="420px"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+              <div className="relative h-[clamp(520px,92vw,1000px)] w-full max-w-[950px] md:h-[clamp(550px,620px,800px)] md:w-[clamp(550px,620px,800px)]">
                 <Image
-                  src="/images/horizontal/Rectangle 13.png"
-                  alt="Alchemy Necklace"
+                    src="images/horiz/4-2.jpg"
+                    alt="Alchemy Editorial"
                   fill
                   sizes="950px"
                   className="object-cover"
-                />
-              </div>
-
-              <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
-                <TextoTitulo
-                  collection="Alchemy"
-                  piece="Gilded Orbit Necklace"
-                  description="Designed around the neck like a constellation—golden forms, rare stones, and a precise rhythm that feels both luxurious and fearless."
                 />
               </div>
             </div>
@@ -232,28 +292,21 @@ export default function HorizontalScrollSection() {
           {/* Panel 5 */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between xl:gap-20">
-              <div className="relative h-[clamp(520px,92vw,1000px)] w-full max-w-[950px] md:h-[clamp(520px,74vh,1000px)] md:w-[clamp(420px,52vw,950px)]">
-                <Image
-                  src="/images/horizontal/Rectangle 14.png"
-                  alt="Alchemy Editorial"
-                  fill
-                  sizes="950px"
-                  className="object-cover"
-                />
-              </div>
+         
 
               <div className="flex w-full flex-col gap-12 md:w-auto">
                 <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                   <TextoTitulo
                     collection="Alchemy"
-                    piece="Wildfire Signet"
-                    description="A bold crest of color and cut. Built to be worn daily—never delicate, always refined—like armor made for celebration."
-                  />
+                    piece="Hera Collection"
+                    description="A striking collection shaped by the timeless intensity of blue sapphires
+and aquamarines, Riva embodies clarity, confidence, and understated
+sophistication."   />
                 </div>
 
                 <div className="relative h-[clamp(300px,72vw,540px)] w-full max-w-[420px] md:h-[clamp(300px,38vh,540px)] md:w-[clamp(220px,24vw,420px)]">
                   <Image
-                    src="/images/horizontal/Rectangle 15.png"
+                    src="images/horiz/5-1.jpg"
                     alt="Wildfire Signet detail"
                     fill
                     sizes="420px"
@@ -261,60 +314,57 @@ export default function HorizontalScrollSection() {
                   />
                 </div>
               </div>
+
+              <div className="relative h-[clamp(520px,92vw,1000px)] w-full max-w-[950px] md:h-[clamp(520px,74vh,1000px)] md:w-[clamp(420px,52vw,950px)]">
+                <Image
+                    src="images/horiz/5-2.jpg"
+                    alt="Alchemy Editorial"
+                  fill
+                  sizes="950px"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </section>
 
           {/* Panel 6 */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-10 xl:gap-20">
-              <div className="relative h-[clamp(260px,52vw,540px)] w-full max-w-[860px] md:h-[clamp(260px,34vw,540px)] md:w-[clamp(380px,48vw,860px)]">
-                <Image
-                  src="/images/horizontal/Rectangle 16.png"
-                  alt="Alchemy detail"
-                  fill
-                  sizes="860px"
-                  className="object-cover"
-                />
-              </div>
-
+            <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
                   collection="Alchemy"
-                  piece="Verdant Pulse Ring"
-                  description="A clean, modern frame for a vibrant center—cut to amplify color and set to move with you, from daylight to night."
-                />
+                  piece="Asteria Collection"
+                  description="Asteria is a necklace-only collection that brings together all the
+signature tones of the brand, creating a radiant expression of
+harmony, light, and versatility."    />
               </div>
-            </div>
-          </section>
 
-          {/* Panel 7 */}
-          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16">
-            <div className="relative w-full flex flex-col gap-10 md:h-full md:block">
-              <div className="relative md:absolute md:left-0 md:top-0">
-                <div className="relative h-[clamp(180px,44vw,420px)] w-full max-w-[750px] md:h-[clamp(140px,24vw,420px)] md:w-[clamp(260px,38vw,750px)]">
+              <div className="flex w-full flex-row gap-6 md:w-auto">
+                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
                   <Image
-                    src="/images/horizontal/Rectangle 19.png"
-                    alt="Alchemy editorial"
+                    src="images/horiz/TOM07900-2.jpg"
+                    alt="Alchemy collection"
                     fill
-                    sizes="850px"
+                    sizes="800px"
                     className="object-cover"
+                    priority={false}
                   />
                 </div>
-              </div>
-
-              <div className="relative md:absolute md:bottom-0 md:right-0">
-                <div className="relative h-[clamp(180px,44vw,420px)] w-full max-w-[750px] md:h-[clamp(140px,24vw,420px)] md:w-[clamp(260px,38vw,750px)]">
+                <div className="relative md:h-[clamp(550px,600px,800px)] w-full max-w-[400px] md:w-[clamp(260px,34vw,700px)]">
                   <Image
-                    src="/images/horizontal/Rectangle 10.png"
-                    alt="Alchemy portrait"
+                    src="images/horiz/TOM07924-4.jpg"
+                    alt="Alchemy collection"
                     fill
-                    sizes="900px"
+                    sizes="800px"
                     className="object-cover"
+                    priority={false}
                   />
                 </div>
               </div>
             </div>
           </section>
+
+      
 
           {/* Panel 8 — Video */}
           <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16" style={{ backgroundColor: '#686C52' }}>
