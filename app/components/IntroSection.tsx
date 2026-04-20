@@ -1,8 +1,34 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function IntroSection() {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || typeof window === 'undefined') return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: hero,
+      start: 'top 90%',
+      end: 'bottom 20%',
+      scrub: true,
+      animation: gsap.fromTo(hero, { scale: 1 }, { scale: 1.80, ease: 'none' }),
+    });
+
+    return () => {
+      trigger.kill();
+    };
+  }, []);
+
   return (
     <section className="w-full bg-[url('/images/Comeup_f0000.png')] bg-cover bg-center bg-no-repeat">
       <div className="mx-auto w-full max-w-[327px] px-0 md:max-w-6xl md:px-8">
@@ -25,7 +51,7 @@ export default function IntroSection() {
             The Spirit of Luxury
           </h1>
 
-          <div className="mt-[40px]" data-intro-hero>
+          <div ref={heroRef} className="mt-[40px]" data-intro-hero>
             <Image
               src="/images/loader/8.png"
               alt="Alkmi collection"

@@ -11,17 +11,19 @@ if (typeof window !== 'undefined') {
 function TextoTituloVideo({
   collection,
   description,
+  align = 'left',
 }: {
   collection: string;
   piece: string;
   description: string;
+  align?: 'left' | 'right';
 }) {
   return (
-    <div className="text-left">
-      <h3 className="font-title font-normal text-[58px] leading-[1] text-[#D9DFC6] md:text-[clamp(45px,4.48vw,88px)]">
-      {collection}
+    <div className={align === 'right' ? 'text-right' : 'text-left'}>
+      <h3 className="font-title font-normal text-[40px] leading-[1] text-[#D9DFC6] md:text-[clamp(36px,3.6vw,70px)]">
+        {collection}
       </h3>
-      <p className="font-content font-light text-[16px] leading-[1.55] text-[#30331D]/90 max-w-[380px] md:text-[clamp(20px,1.08vw,19px)] ">
+      <p className={`font-content font-light text-[13px] leading-[1.55] text-[#30331D]/90 md:text-[clamp(14px,1.1vw,20px)] ${align === 'right' ? 'ml-auto max-w-[260px] md:max-w-[340px]' : 'max-w-[260px] md:max-w-[340px]'}`}>
         {description}
       </p>
     </div>
@@ -33,6 +35,8 @@ export default function VideoScrollSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRevealRef = useRef<HTMLParagraphElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const text1Ref = useRef<HTMLDivElement>(null);
+  const text2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -217,6 +221,50 @@ export default function VideoScrollSection() {
       video.addEventListener('loadedmetadata', startPlaybackLoopIfReady);
     }
 
+    // Fixed overlay texts — fade in then fade out as the section scrolls
+    const text1 = text1Ref.current;
+    const text2 = text2Ref.current;
+
+    if (text1 && text2) {
+      gsap.set([text1, text2], { opacity: 0 });
+
+      const totalScroll = () => container.offsetHeight - window.innerHeight;
+
+      // Text 1: visible during ~15 – 45% of the section scroll
+      const tl1 = gsap.timeline({ paused: true });
+      tl1
+        .fromTo(text1, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.in' })
+        .to(text1, { opacity: 1, duration: 0.5 })
+        .to(text1, { opacity: 0, duration: 0.25, ease: 'power1.out' });
+
+      ScrollTrigger.create({
+        id: 'text1-fade',
+        trigger: container,
+        start: () => `top+=${totalScroll() * 0.45} top`,
+        end:   () => `top+=${totalScroll() * 0.65} top`,
+        scrub: 1,
+        animation: tl1,
+        invalidateOnRefresh: true,
+      });
+
+      // Text 2: visible during ~52 – 82% of the section scroll
+      const tl2 = gsap.timeline({ paused: true });
+      tl2
+        .fromTo(text2, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.in' })
+        .to(text2, { opacity: 1, duration: 0.5 })
+        .to(text2, { opacity: 0, duration: 0.25, ease: 'power1.out' });
+
+      ScrollTrigger.create({
+        id: 'text2-fade',
+        trigger: container,
+        start: () => `top+=${totalScroll() * 0.65} top`,
+        end:   () => `top+=${totalScroll() * 0.82} top`,
+        scrub: 1,
+        animation: tl2,
+        invalidateOnRefresh: true,
+      });
+    }
+
     return () => {
       video.removeEventListener('loadedmetadata', startPlaybackLoopIfReady);
       if (rafId !== null) {
@@ -312,30 +360,34 @@ export default function VideoScrollSection() {
             </p>
           </div>
 
-          <div className="flex justify-start pt-[200px] ml-0 md:pt-[400px] md:ml-[-100px]">
-          <TextoTituloVideo
-                    collection="Alchemy"
-                    piece="Prism Veil Earrings"
-                    description="At the heart of the brand is our signature light
-green inspired by the green sapphire, a stone
-that embodies both natural elegance and
-inner strength, inspiring transformation and
-bold individuality through beauty and color."
-                  />
-          </div>
-          <div className="flex justify-end pt-[800px] mr-0 md:pt-[1700px] md:mr-[-100px]">
-          <TextoTituloVideo
-                    collection="Alchemy"
-                    piece="Prism Veil Earrings"
-                    description="With contemporary designs rooted on the legacy of
-multi-shaped stones, ALKMI reimagines fine jewelry
-through bold color combinations and distinctive,
-innovative details, like our light green titanium,
-offering women a new way to express themselves
-through color, character, and confidence."
-                  />
-          </div>
         </div>
+      </div>
+
+      {/* Fixed overlay — top-left */}
+      <div
+        ref={text1Ref}
+        className="fixed top-20 left-6 z-20 pointer-events-none md:top-24 md:left-14"
+        style={{ opacity: 0 }}
+      >
+        <TextoTituloVideo
+          collection="Alchemy"
+          piece="Prism Veil Earrings"
+          description={`At the heart of the brand is our signature light\ngreen inspired by the green sapphire, a stone\nthat embodies both natural elegance and\ninner strength, inspiring transformation and\nbold individuality through beauty and color.`}
+        />
+      </div>
+
+      {/* Fixed overlay — bottom-right */}
+      <div
+        ref={text2Ref}
+        className="fixed bottom-20 right-6 z-20 pointer-events-none md:bottom-24 md:right-14"
+        style={{ opacity: 0 }}
+      >
+        <TextoTituloVideo
+          collection="Alchemy"
+          piece="Prism Veil Earrings"
+          align="right"
+          description={`With contemporary designs rooted on the legacy of\nmulti-shaped stones, ALKMI reimagines fine jewelry\nthrough bold color combinations and distinctive,\ninnovative details, like our light green titanium,\noffering women a new way to express themselves\nthrough color, character, and confidence.`}
+        />
       </div>
 
       {/* "Alchemy collection" label — appears at the very bottom of the scroll section */}
