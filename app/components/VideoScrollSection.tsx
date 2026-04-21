@@ -63,18 +63,41 @@ export default function VideoScrollSection() {
     let rafId: number | null = null;
     let lastRafTs = 0;
 
-    // Optional: quantize seeks to a fixed FPS grid. This can reduce decoder churn,
-    // but it can also look "steppy" (especially on 60/120Hz displays).
-    // Leave as null for smoothest scrubbing.
-    // Keep this matched to your encoded video's FPS (currently 30fps).
-    const SEEK_QUANTIZE_FPS: number | null = 30;
+    // Only one seek is in flight at a time. When the browser finishes decoding
+    // we check if a newer target is waiting and seek to that instead.
+    // This prevents seek-queue buildup which is the primary cause of jank.
+    let isSeeking = false;
+    let pendingSeekTime: number | null = null;
 
-    // Limit how fast we seek to avoid huge jumps that can thrash decoding.
-    // Units: seconds of video per second of real time.
-    const MAX_SEEK_RATE = 12;
+    // Snap to the video's native frame grid.
+    // Desktop video: 30 fps — Mobile video: 24 fps.
+    const FRAME_DURATION = isMdScreen ? 1 / 30 : 1 / 24;
 
-    // Time constant for smoothing scroll progress into video progress (seconds).
-    const PROGRESS_SMOOTHING_TAU = 0.12;
+    // Smoothing time-constant (seconds). Higher = silkier, slight lag.
+    const PROGRESS_SMOOTHING_TAU = 0.10;
+
+    const commitSeek = (time: number) => {
+      const maxTime = Math.max(video.duration - 0.01, 0);
+      const clamped = Math.min(Math.max(time, 0), maxTime);
+      // Round to nearest frame so we never seek between frames.
+      const quantized = Math.round(clamped / FRAME_DURATION) * FRAME_DURATION;
+      // Skip if we're already on this frame.
+      if (Math.abs(video.currentTime - quantized) < FRAME_DURATION * 0.5) return;
+      isSeeking = true;
+      video.currentTime = quantized;
+    };
+
+    const onSeeked = () => {
+      isSeeking = false;
+      // If a newer target arrived while we were decoding, seek to it now.
+      if (pendingSeekTime !== null) {
+        const t = pendingSeekTime;
+        pendingSeekTime = null;
+        commitSeek(t);
+      }
+    };
+
+    video.addEventListener('seeked', onSeeked);
 
     const animateVideoTime = (ts: number) => {
       if (!lastRafTs) lastRafTs = ts;
@@ -82,32 +105,16 @@ export default function VideoScrollSection() {
       lastRafTs = ts;
 
       const maxTime = Math.max(video.duration - 0.01, 0);
-      // Exponential smoothing that is stable across different rAF rates.
+      // Exponential smoothing stable across variable rAF rates.
       const alpha = 1 - Math.exp(-dt / PROGRESS_SMOOTHING_TAU);
       smoothedProgress += (targetProgress - smoothedProgress) * alpha;
-      const targetTime = maxTime * smoothedProgress;
+      const desiredTime = maxTime * smoothedProgress;
 
-      const quantizeStep =
-        SEEK_QUANTIZE_FPS && SEEK_QUANTIZE_FPS > 0 ? 1 / SEEK_QUANTIZE_FPS : 0;
-      const desiredTime =
-        quantizeStep > 0
-          ? Math.round(targetTime / quantizeStep) * quantizeStep
-          : targetTime;
-
-      const delta = desiredTime - video.currentTime;
-      const maxStep = Math.max(MAX_SEEK_RATE * dt, 0.001);
-      const clampedDelta = Math.max(Math.min(delta, maxStep), -maxStep);
-
-      const nextTime = Math.min(Math.max(video.currentTime + clampedDelta, 0), maxTime);
-
-      // Skip tiny seeks to reduce decoder churn and micro-jitter.
-      if (Math.abs(video.currentTime - nextTime) > 0.0005) {
-        // `fastSeek` (when available) can be smoother for rapid scrubbing.
-        if (typeof (video as HTMLVideoElement & { fastSeek?: (time: number) => void }).fastSeek === 'function') {
-          (video as HTMLVideoElement & { fastSeek: (time: number) => void }).fastSeek(nextTime);
-        } else {
-          video.currentTime = nextTime;
-        }
+      if (isSeeking) {
+        // Store the latest target; onSeeked will pick it up.
+        pendingSeekTime = desiredTime;
+      } else {
+        commitSeek(desiredTime);
       }
 
       rafId = window.requestAnimationFrame(animateVideoTime);
@@ -267,6 +274,7 @@ export default function VideoScrollSection() {
 
     return () => {
       video.removeEventListener('loadedmetadata', startPlaybackLoopIfReady);
+      video.removeEventListener('seeked', onSeeked);
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId);
       }
@@ -392,7 +400,7 @@ export default function VideoScrollSection() {
 
       {/* "Alchemy collection" label — appears at the very bottom of the scroll section */}
       <div className="absolute bottom-0 left-0 px-6 pb-12 md:px-0 md:pb-24 md:ml-[80px]">
-        <a className="text-left text-[#30331D] font-title text-[60px] md:text-[clamp(60px,8vw,120px)] leading-[1.15] transition-colors duration-300">Alchemy <br/> collection</a>
+        <a className="text-left text-[#30331D] font-title text-[60px] md:text-[clamp(60px,8vw,120px)] leading-[1.15] transition-colors duration-300">Discover our <br/> collection</a>
       </div>
       
     </div>

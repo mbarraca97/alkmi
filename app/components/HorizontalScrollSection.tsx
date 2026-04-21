@@ -132,7 +132,7 @@ export default function HorizontalScrollSection() {
             <div className="relative z-10 flex h-full items-center px-6 py-12 md:px-16 xl:px-24">
               <div className="text-left w-full max-w-[480px] md:max-w-[min(540px,38vw)] mt-[300px]">
                 <h4 className="font-title font-normal text-[19px] leading-[1.05] text-[#D9DFC6] mb-[clamp(10px,1.1vw,16px)] md:text-[clamp(22px,2.6vw,42px)]">
-                  Alchemy Collection
+                  Alkmi Collection
                 </h4>
                 <p className="font-content font-light text-[14px] leading-[1.55] text-[#D9DFC6]/90 whitespace-pre-line md:text-[clamp(14px,1vw,16px)]">
                   {`Inspired by the ancient art of alchemy, our collections reflect ALKMI's devotion to transformation and refined design. Crafted in 18K yellow gold and adorned with multi-shaped colored gemstones and natural diamonds, each piece is a bold statement of personal expression.\n\nA whisper of a light green detail in the setting adds a modern and innovative signature touch to every jewel, a subtle yet striking detail that brings a contemporary twist to tradition.`}
@@ -146,8 +146,8 @@ export default function HorizontalScrollSection() {
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
-                  collection="Alchemy"
-                  piece="Selene Collection"
+                  collection="Selene "
+                  piece=""
                   description="A luminous collection centered around tanzanite, Selene captures
 a quiet elegance with cool, celestial tones and a refined sense of
 mystery."    />
@@ -183,8 +183,8 @@ mystery."    />
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)] md:ml-[60px]">
                 <TextoTitulo
-                  collection="Alchemy"
-                  piece="Aurea Collection"
+                  collection="Aurea"
+                  piece=" "
                   description="Defined by the soft glow of pink tourmaline, Aura is a delicate yet
 expressive collection that brings warmth, femininity, and light to
 every piece."    />
@@ -220,8 +220,8 @@ every piece."    />
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
-                  collection="Alchemy"
-                  piece="Terra Collection"
+                  collection="Terra"
+                  piece=" "
                   description="With medium teal sapphire at its heart, Terra reflects depth, balance,
 and a grounded beauty inspired by the richness of the natural world."  />
               </div>
@@ -259,8 +259,8 @@ and a grounded beauty inspired by the richness of the natural world."  />
               <div className="flex w-full flex-col gap-6 md:w-auto">
                 <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                   <TextoTitulo
-                    collection="Alchemy"
-                    piece="Riva Collection"
+                    collection="Riva"
+                    piece=""
                     description="A striking collection shaped by the timeless intensity of blue sapphires
 and aquamarines, Riva embodies clarity, confidence, and understated
 sophistication."/>
@@ -297,8 +297,8 @@ sophistication."/>
               <div className="flex w-full flex-col gap-12 md:w-auto">
                 <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                   <TextoTitulo
-                    collection="Alchemy"
-                    piece="Hera Collection"
+                    collection="Hera"
+                    piece=""
                     description="A striking collection shaped by the timeless intensity of blue sapphires
 and aquamarines, Riva embodies clarity, confidence, and understated
 sophistication."   />
@@ -332,8 +332,8 @@ sophistication."   />
             <div className="flex h-full flex-col gap-10 md:flex-row md:items-center md:justify-center xl:gap-20">
               <div className="w-full max-w-[650px] md:max-w-[min(650px,44vw)]">
                 <TextoTitulo
-                  collection="Alchemy"
-                  piece="Asteria Collection"
+                  collection="Asteria"
+                  piece=""
                   description="Asteria is a necklace-only collection that brings together all the
 signature tones of the brand, creating a radiant expression of
 harmony, light, and versatility."    />
