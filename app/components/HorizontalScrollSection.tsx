@@ -31,7 +31,7 @@ if (typeof window !== 'undefined') {
       <h4 className={`font-title font-normal text-[25px] leading-[1.05] mb-[clamp(16px,2.1vw,30px)] md:text-[clamp(32px,3.2vw,64px)]${collection ? ' mt-[clamp(16px,2.1vw,30px)]' : ''}`} style={{ color }}>
         {piece}
       </h4>
-      <p className="font-content font-light text-[10px] leading-[1.55] max-w-[160px] md:text-[clamp(16px,1.35vw,24px)] md:max-w-[min(620px,42vw)] whitespace-pre-line" style={{ color: light ? 'rgba(217,223,198,0.9)' : 'rgba(71,76,44,0.9)' }}>
+      <p className="font-content font-light text-[10px] leading-[1.55] max-w-full md:text-[clamp(16px,1.35vw,24px)] md:max-w-[min(620px,42vw)] whitespace-pre-line" style={{ color: light ? 'rgba(217,223,198,0.9)' : 'rgba(71,76,44,0.9)' }}>
         {description}
       </p>
     </div>
@@ -42,6 +42,7 @@ export default function HorizontalScrollSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -101,6 +102,25 @@ export default function HorizontalScrollSection() {
       };
     });
 
+    // Fade in the hero panel when the section scrolls into view.
+    const hero = heroRef.current;
+    if (hero) {
+      gsap.fromTo(
+        hero,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power1.out',
+          scrollTrigger: {
+            trigger: container,
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
+          },
+        },
+      );
+    }
+
     return () => {
       mm.revert();
       clearDesktopArtifacts();
@@ -118,13 +138,13 @@ export default function HorizontalScrollSection() {
           className="flex flex-col md:flex-row md:h-full"
         >
           {/* Panel 0 — Hero */}
-          <section className="relative flex-shrink-0 w-full overflow-hidden md:w-screen md:h-full md:min-h-0" style={{ minHeight: 'clamp(520px, 100vh, 1080px)' }}>
+          <section ref={heroRef} className="relative flex-shrink-0 w-full overflow-hidden md:w-screen md:h-full md:min-h-0" style={{ minHeight: 'clamp(520px, 100vh, 1080px)', opacity: 0 }}>
             <Image
               src="/images/horizontal/alchemy-collection-hero.jpg"
               alt="Alchemy Collection"
               fill
               sizes="100vw"
-              className="object-cover"
+              className="object-right object-cover md:object-center"
               priority
             />
             {/* subtle dark gradient on the left so text stays legible */}
@@ -134,7 +154,7 @@ export default function HorizontalScrollSection() {
                 <h4 className="font-title font-normal text-[19px] leading-[1.05] text-[#D9DFC6] mb-[clamp(10px,1.1vw,16px)] md:text-[clamp(22px,2.6vw,42px)]">
                   Alkmi Collection
                 </h4>
-                <p className="font-content font-light text-[14px] leading-[1.55] text-[#D9DFC6]/90 whitespace-pre-line md:text-[clamp(14px,1vw,16px)]">
+                <p className="font-content font-light text-[14px] leading-[1.55] text-[#474C2C] md:text-[#D9DFC6]/90 whitespace-pre-line md:text-[clamp(14px,1vw,16px)]">
                   {`Inspired by the ancient art of alchemy, our collections reflect ALKMI's devotion to transformation and refined design. Crafted in 18K yellow gold and adorned with multi-shaped colored gemstones and natural diamonds, each piece is a bold statement of personal expression.\n\nA whisper of a light green detail in the setting adds a modern and innovative signature touch to every jewel, a subtle yet striking detail that brings a contemporary twist to tradition.`}
                 </p>
               </div>
@@ -367,7 +387,7 @@ harmony, light, and versatility."    />
       
 
           {/* Panel 8 — Video */}
-          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16" style={{ backgroundColor: '#686C52' }}>
+          <section className="flex-shrink-0 w-full px-6 py-12 md:w-screen md:h-full md:min-h-0 md:px-12 md:py-12 xl:px-16 bg-[url('/images/bg_dark_green.jpg')] bg-opacity-50 "   >
             <div className="flex h-full items-center justify-center">
               {/* Desktop */}
               <video

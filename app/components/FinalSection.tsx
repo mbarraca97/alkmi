@@ -2,80 +2,65 @@
 
 import Image from 'next/image';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const CAROUSEL_IMAGES = [
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const STORY_IMAGES = [
   '/images/finalsection/Rectangle 10.png',
   '/images/finalsection/Rectangle 20.png',
   '/images/horizontal/Rectangle 10.png',
-  '/images/horizontal/Rectangle 11.png',
-  '/images/horizontal/Rectangle 12.png',
 ];
 
-const MOBILE_CAROUSEL_GAP = 32; // px — matches gap-8
-const DESKTOP_CAROUSEL_GAP = 64; // px — matches gap-16
-const DESKTOP_LEFT_WIDTH = 472;
-const DESKTOP_LEFT_HEIGHT = 326;
-const DESKTOP_RIGHT_WIDTH = 600;
-const DESKTOP_RIGHT_HEIGHT = 907;
+const bgImage = '/images/bg_dark_green.jpg';
 
 export default function FinalSection() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState('');
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [transitionEnabled, setTransitionEnabled] = useState(true);
-  const [slideWidth, setSlideWidth] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const imageStageRef = useRef<HTMLDivElement>(null);
+  const imageOneRef = useRef<HTMLDivElement>(null);
+  const imageTwoRef = useRef<HTMLDivElement>(null);
+  const imageThreeRef = useRef<HTMLDivElement>(null);
 
   const formTextSize = useMemo(
     () => 'text-[33px] md:text-[clamp(44px,6.2vw,112.22px)]',
     []
   );
 
-  /* Clone first 2 images at the end so the loop is seamless when 2 are visible */
-  const allImages = useMemo(
-    () => [...CAROUSEL_IMAGES, CAROUSEL_IMAGES[0], CAROUSEL_IMAGES[1]],
-    []
-  );
-
   useEffect(() => {
-    const measure = () => {
-      const el = carouselRef.current;
-      if (!el) return;
-      setSlideWidth(el.offsetWidth);
-    };
+    const stage = imageStageRef.current;
+    const imageOne = imageOneRef.current;
+    const imageTwo = imageTwoRef.current;
+    const imageThree = imageThreeRef.current;
+    if (!stage || !imageOne || !imageTwo || !imageThree) return;
 
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (carouselRef.current) ro.observe(carouselRef.current);
-    return () => ro.disconnect();
-  }, []);
+    gsap.set(imageOne, { scale: 1.15, transformOrigin: 'center center', force3D: true });
+    gsap.set(imageTwo, { scale: 0.5, transformOrigin: 'center center', force3D: true });
+    gsap.set(imageThree, { scale: 0.5, transformOrigin: 'center center', force3D: true });
 
-  /* Carousel — auto-advance every 4 s */
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setSlideIndex((prev) => prev + 1);
-    }, 4000);
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stage,
+        start: 'top 85%',
+        end: 'bottom 25%',
+        scrub: 1.4,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    tl.to(imageOne, { scale: 0.7, ease: 'none', force3D: true }, 0)
+      .to(imageTwo, { scale: 1.3, ease: 'none', force3D: true }, 0)
+      .to(imageThree, { scale: 1.3, ease: 'none', force3D: true }, 0);
+
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      tl.scrollTrigger?.kill();
+      tl.kill();
     };
   }, []);
-
-  /* Infinite loop: when we reach the clone region, instantly jump back to 0 */
-  useEffect(() => {
-    if (slideIndex !== CAROUSEL_IMAGES.length) return;
-    const timeout = setTimeout(() => {
-      setTransitionEnabled(false);
-      setSlideIndex(0);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setTransitionEnabled(true);
-        });
-      });
-    }, 700); // must match the CSS transition duration
-    return () => clearTimeout(timeout);
-  }, [slideIndex]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -88,112 +73,70 @@ export default function FinalSection() {
   };
 
   return (
-    <section className="relative w-full bg-[#686C52] px-6 py-16 pt-24 md:p-[80px] md:pt-[120px]">
+    <section className="relative w-full bg-[url('/images/bg_dark_green.jpg')] bg-opacity-50 px-6 py-16 pt-24 md:p-[80px] md:pt-[120px]">
       {/* Top copy */}
       <div className="flex w-full flex-col items-start justify-between gap-8 pb-16 md:flex-row md:gap-16 md:pb-24">
         <h2 className="font-title font-normal uppercase text-[38px] leading-[1.05] text-[#D9DFC6] text-left md:text-[54px]">
           Crafted <br /> From Within
         </h2>
 
-        <p className="font-content font-light text-[16px] leading-[1.45] text-[#30331D] text-left max-w-[700px] md:text-[24px]">
+        <p className="font-content font-light text-[16px] leading-[1.45] text-[#D9DFC6] text-left max-w-[700px] md:text-[24px]">
         Harnessing cutting-edge technology and master craftsmanship, our factory is
 a true reflection of our pursuit of perfection. From concept to creation, every
 step of the process happens in-house. It is a complete end-to-end journey hat ensures precision, independence, and innovation at every stage.
         </p>
       </div>
 
-      {/* Image carousel */}
+      {/* Three-image scroll animation */}
       <div
-        ref={carouselRef}
-        className="mt-10 w-full md:mt-14"
+        ref={imageStageRef}
+        className="relative mt-10 h-[1300px] w-full md:mt-14 md:h-[1400px] "
       >
-        {/* Mobile: single image carousel */}
-        <div className="h-[250px] overflow-hidden md:hidden">
-          <div
-            className="flex h-full"
-            style={{
-              gap: `${MOBILE_CAROUSEL_GAP}px`,
-              transform: slideWidth
-                ? `translateX(-${slideIndex * (slideWidth + MOBILE_CAROUSEL_GAP)}px)`
-                : undefined,
-              transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
-            }}
-          >
-            {allImages.map((src, i) => (
-              <div
-                key={`m-${i}`}
-                className="relative h-full flex-shrink-0"
-                style={{ width: slideWidth ? `${slideWidth}px` : '100%' }}
-              >
-                <Image
-                  src={src}
-                  alt="ALKMI atelier"
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+        {/* First image — centered */}
+        <div
+          ref={imageOneRef}
+          className="absolute right-0 top-0 w-[300px] max-w-[480px] md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[380px] lg:w-[480px]"
+        >
+          <div className="relative h-[620px] md:h-[740px] lg:h-[840px]">
+            <Image
+              src={STORY_IMAGES[0]}
+              alt="ALKMI atelier"
+              fill
+              sizes="(max-width: 768px) 86vw, 1080px"
+              className="object-cover"
+            />
           </div>
         </div>
 
-        {/* Desktop: 2-slot carousel where right image becomes left */}
-        <div className="hidden h-[1147px] items-stretch gap-16 overflow-hidden md:flex md:justify-center">
-          <div
-            className="relative shrink-0 self-center overflow-hidden"
-            style={{ width: `${DESKTOP_LEFT_WIDTH}px`, height: `${DESKTOP_LEFT_HEIGHT}px` }}
-          >
-            <div
-              className="flex h-full"
-              style={{
-                gap: `${DESKTOP_CAROUSEL_GAP}px`,
-                transform: `translateX(-${slideIndex * (DESKTOP_RIGHT_WIDTH + DESKTOP_CAROUSEL_GAP)}px)`,
-                transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
-              }}
-            >
-              {allImages.map((src, i) => (
-                <div
-                  key={`dl-${i}`}
-                  className="relative h-full shrink-0"
-                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px` }}
-                >
-                  <Image
-                    src={src}
-                    alt="ALKMI craftsmanship"
-                    fill
-                    sizes="472px"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+        {/* Second image — left, 800px below the first */}
+        <div
+          ref={imageTwoRef}
+          className="absolute md:left-[-50px] top-100 w-[200px] max-w-[480px] md:w-[380px] lg:w-[480px]"
+        >
+          <div className="relative h-[320px] md:h-[740px] lg:h-[840px]">
+            <Image
+              src={STORY_IMAGES[1]}
+              alt="ALKMI craftsmanship"
+              fill
+              sizes="(max-width: 768px) 82vw, 1020px"
+              className="object-cover"
+            />
           </div>
+        </div>
 
-          <div className="relative h-full w-[600px] shrink-0 overflow-hidden">
-            <div
-              className="flex h-full"
-              style={{
-                gap: `${DESKTOP_CAROUSEL_GAP}px`,
-                transform: `translateX(-${(slideIndex + 1) * (DESKTOP_RIGHT_WIDTH + DESKTOP_CAROUSEL_GAP)}px)`,
-                transition: transitionEnabled ? 'transform 700ms ease-in-out' : 'none',
-              }}
-            >
-              {allImages.map((src, i) => (
-                <div
-                  key={`dr-${i}`}
-                  className="relative h-full shrink-0"
-                  style={{ width: `${DESKTOP_RIGHT_WIDTH}px`, height: `${DESKTOP_RIGHT_HEIGHT}px` }}
-                >
-                  <Image
-                    src={src}
-                    alt="ALKMI atelier"
-                    fill
-                    sizes="700px"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+        {/* Third image — right, 1500px below the first */}
+        <div
+          ref={imageThreeRef}
+          className="absolute right-0 md:right-[-50px] top-200 w-[350px] max-w-[900px] md:w-[760px] lg:w-[900px]"
+        >
+          <div className="relative h-[200px] md:h-[440px] lg:h-[520px]">
+            <Image
+              src={STORY_IMAGES[2]}
+              alt="ALKMI signature details"
+              fill
+              sizes="(max-width: 768px) 78vw, 900px"
+              className="object-cover"
+            />
           </div>
         </div>
       </div>
@@ -256,12 +199,11 @@ step of the process happens in-house. It is a complete end-to-end journey hat en
         />
 
         <div className="flex flex-col items-center text-center">
-          <div className="font-title font-normal text-[34.52px] leading-[1] tracking-[0px] text-[#D9DFC6]">
+          <div className="font-title font-normal  text-[24px] md:text-[34.52px] leading-[1] tracking-[0px] text-[#D9DFC6]">
             Contemporary Fine Jewelry
           </div>
           <div className="mt-2 font-content font-extralight uppercase text-[24px] leading-[1] tracking-[0px] text-[#D9DFC6]">
-            By AJ Jewels
-          </div>
+By The House of AJ          </div>
         </div>
 
         <button
